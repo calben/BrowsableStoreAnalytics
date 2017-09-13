@@ -1,0 +1,16 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "SublevelTemplates",
+	"Description": "A collection of map templates for use in testing and development.",
+	"Category": "Other",
+	"CreatedBy": "Calem Bendell",
+	"CreatedByURL": "calben.xyz",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": false,
+	"Installed": false
+}
