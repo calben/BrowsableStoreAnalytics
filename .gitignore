@@ -73,3 +73,9 @@ Intermediate/*
 
 # Cache files for the editor to use
 DerivedDataCache/*
+
+# Store
+Content/Chameleon/*
+Content/CircleGauge/*
+Content/DT_Mat_Vol1/*
+Content/PantryStuffersPackOne/*
