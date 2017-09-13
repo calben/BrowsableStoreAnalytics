@@ -103,6 +103,33 @@ FVector AVoxelManager::GetGridLocationForOffGridLocation(FVector Location)
 	return FVector(X, Y, Z);
 }
 
+void AVoxelManager::AddHitAtLocation(FVector Location)
+{
+	FVector VoxelLocation = this->GetGridLocationForOffGridLocation(Location);
+	//UE_LOG(LogTemp, Warning, TEXT("%s"), *(VoxelManager->GetGridLocationForOffGridLocation(f.Location)).ToString());
+	AActor* VoxelActor = this->PlaceActorForLocation(VoxelLocation);
+	if (VoxelActor)
+	{
+		AFrequencyIndicatorBox* FrequencyIndicatorBox = Cast<AFrequencyIndicatorBox>(VoxelActor);
+		if (FrequencyIndicatorBox)
+		{
+			FrequencyIndicatorBox->SetValue(0.f);
+		}
+	}
+	else {
+		VoxelActor = this->GetActorAtLocation(VoxelLocation);
+		if (VoxelActor)
+		{
+			AFrequencyIndicatorBox* FrequencyIndicatorBox = Cast<AFrequencyIndicatorBox>(VoxelActor);
+			if (FrequencyIndicatorBox)
+			{
+				FrequencyIndicatorBox->Hits += 1;
+			}
+		}
+	}
+	this->TotalHits += 1;
+}
+
 void AVoxelManager::SetManagedBoxesValues()
 {
 	for (auto Box : IndicatorBoxes)

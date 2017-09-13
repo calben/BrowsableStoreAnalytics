@@ -39,15 +39,18 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TSubclassOf<AActor> ActorType;
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 		AActor* GetActorAtLocation(FVector Location); //! returns null if no actor there
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 		AActor* PlaceActorForLocation(FVector Location, bool bPlaceAdjacentBoxes = true, int AdjacencyJumps = 1); //! returns null if fail
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 		FVector GetGridLocationForOffGridLocation(FVector Location);
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
+		void AddHitAtLocation(FVector Location);
+
+	UFUNCTION(BlueprintCallable)
 		void SetManagedBoxesValues();
 };
