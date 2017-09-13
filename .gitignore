@@ -79,3 +79,7 @@ Content/Chameleon/*
 Content/CircleGauge/*
 Content/DT_Mat_Vol1/*
 Content/PantryStuffersPackOne/*
+
+# Plugins Built Content
+Plugins/*/Binaries/*
+Plugins/*/Intermediate/*
