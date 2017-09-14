@@ -96,14 +96,47 @@ FString UInfluxDBUnrealClient::ConvertTransformToLineProtocol(FTransform transfo
 	return fs;
 }
 
+FString UInfluxDBUnrealClient::ConvertActorNameToFloatMapToLineProtocol(TMap<AActor*, float> map)
+{
+	TArray<FString> values;
+	for (TPair<AActor*, float> elem : map)
+	{
+		FString string;
+		string += elem.Key->GetName();
+		string += TEXT("=");
+		string += FString::Printf(TEXT("%f"), elem.Value);
+		values.Add(string);
+	}
+	return FString::Join(values, TEXT(","));
+}
+
+FString UInfluxDBUnrealClient::ConvertActorNameToIntMapToLineProtocol(TMap<AActor*, int> map)
+{
+	TArray<FString> values;
+	int sum = 1;
+	for (TPair<AActor*, int> elem : map)
+	{
+		values.Add(FString::Printf(TEXT("%s=%i"), *(elem.Key->GetName()), elem.Value));
+		sum += elem.Value;
+	}
+	for (TPair<AActor*, int> elem : map)
+	{
+		values.Add(FString::Printf(TEXT("%s_percent=%f"), *(elem.Key->GetName()), ((float) elem.Value)/sum));
+		sum += elem.Value;
+	}
+	values.Add(FString::Printf(TEXT("sum=%i"), sum));
+	return FString::Join(values, TEXT(","));
+}
+
 FString UInfluxDBUnrealClient::BuildLineProtocol(FString label, FString values)
 {
-	return label + " " + values;
+	nanoseconds now = duration_cast <nanoseconds>(system_clock::now().time_since_epoch());
+	return label + " " + values + FString::Printf(TEXT("%llu"), now.count());
 }
 
 void UInfluxDBUnrealClient::BuildAndAddLineProtocolToBuffer(FString label, FString values)
 {
-	AddToLineProtocolBuffer(label + " " + values);
+	AddToLineProtocolBuffer(BuildLineProtocol(label, values));
 }
 
 void UInfluxDBUnrealClient::PostLineProtocolToInfluxDBServer(FString lines)
@@ -134,5 +167,3 @@ void UInfluxDBUnrealClient::OnResponseReceived(FHttpRequestPtr Request, FHttpRes
 		UE_LOG(LogTemp, Warning, TEXT("FAIL!"));
 	}
 }
-
-

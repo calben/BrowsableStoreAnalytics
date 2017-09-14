@@ -43,6 +43,12 @@ public:
 		static FString ConvertTransformToLineProtocol(FTransform transform, FString label, bool bIncludeLocation = true, bool bIncludeRotation = true, bool bIncludeScale = true);
 
 	UFUNCTION(BlueprintCallable)
+		FString ConvertActorNameToFloatMapToLineProtocol(TMap<AActor*, float> map);
+
+	UFUNCTION(BlueprintCallable)
+		FString ConvertActorNameToIntMapToLineProtocol(TMap<AActor*, int> map);
+
+	UFUNCTION(BlueprintCallable)
 		static FString BuildLineProtocol(FString label, FString values);
 
 	UFUNCTION(BlueprintCallable)

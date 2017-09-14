@@ -43,7 +43,10 @@ public class PlayerStatisticsTools : ModuleRules
 				"Engine",
 				"Slate",
 				"SlateCore",
-
+                "InputCore",
+                "UMG",
+                "VoxelBasedHeatmapping",
+                "TargetingSystemsPlugin",
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
