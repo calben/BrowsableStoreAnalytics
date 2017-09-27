@@ -1,8 +1,14 @@
 # BrowsableStoreAnalytics
 
+This is a project that demonstrates how virtual reality may be used to gather better analytics from users when evaluating environments.
+Many companies maintain large spaces in which to prototype store layouts and designs.
+Constructing spaces in virtual reality is cheaper and allows a company to gather more data from testing than a simple survey.
+
+# First Time Setup
+
 ## Setting Up Prerequisites
 
-This section taken from https://calben.gitbooks.io/unreal-engine-as-a-research-framework/content/chapter1.html
+This section taken from [https://calben.gitbooks.io/unreal-engine-as-a-research-framework/content/chapter1.html](https://calben.gitbooks.io/unreal-engine-as-a-research-framework/content/chapter1.html)
 
 ### Unreal Engine
 
@@ -19,7 +25,7 @@ We will use the Docker Toolbox to host our TICK stack. You may pick up the Docke
 
 ## Setting Up the TICK Stack
 
-This section taken from https://calben.gitbooks.io/unreal-engine-as-a-research-framework/content/setting-up-the-tick-stack.html 
+This section taken from [https://calben.gitbooks.io/unreal-engine-as-a-research-framework/content/setting-up-the-tick-stack.html](https://calben.gitbooks.io/unreal-engine-as-a-research-framework/content/setting-up-the-tick-stack.html)
 
 We're going to set up the TICK stack using Docker. If you wanted to install it on a remote server, you could follow the documentation here: [https://docs.influxdata.com/chronograf/v1.3/introduction/getting-started/](https://docs.influxdata.com/chronograf/v1.3/introduction/getting-started/)
 
@@ -52,11 +58,16 @@ Assuming we're going the Docker route, you need to do the following:
 3. After this runs, you're ready to set up your Docker containers! You will be asked to log in to Docker Hub. I recommend you make an account or log in, but if you'd rather not there's a "Skip For Now" hidden in the bottom right corner.
 4. You should now be at the home menu for Kitematic. We're going to use the Docker command line to enter the below instructions:
 
-```bash
+```
 docker network create influxdb
-docker run -d -p 8086:8086 --name=influxdb --net=influxdb library/influxdb
-docker run -d -p 9092:9092 --name=kapacitor -v kapacitor:/var/lib/kapacitor --net=influxdb -e KAPACITOR_INFLUXDB_0_URLS_0=http://influxdb:8086 library/kapacitor
-docker run -d -p 8888:8888 --name=chronograf --net=influxdb library/chronograf --influxdb-url=http://influxdb:8086
+docker run -d -p 8086:8086 --name=influxdb \
+        --net=influxdb library/influxdb
+docker run -d -p 9092:9092 --name=kapacitor \
+        -v kapacitor:/var/lib/kapacitor --net=influxdb \ 
+        -e KAPACITOR_INFLUXDB_0_URLS_0=http://influxdb:8086 library/kapacitor
+docker run -d -p 8888:8888 --name=chronograf \
+        --net=influxdb library/chronograf \
+        --influxdb-url=http://influxdb:8086
 ```
 
 If you want to know what we just did, here is a version of the commands to run with comments:
@@ -67,16 +78,21 @@ If you want to know what we just did, here is a version of the commands to run w
 docker network create influxdb
 
 # start an inflxudb container connected to the influxdb network with 8086 mapped (influxdb's port)
-docker run -d -p 8086:8086 --name=influxdb --net=influxdb library/influxdb
+docker run -d -p 8086:8086 --name=influxdb \
+        --net=influxdb library/influxdb
 
 # start a kapacitor container with 9092 mapped (kapacitor's port)
 # and create a docker volume we can use to make tickscripts
 # we also connect this to the influxdb network and force an influxdb url
-docker run -d -p 9092:9092 --name=kapacitor -v kapacitor:/var/lib/kapacitor --net=influxdb -e KAPACITOR_INFLUXDB_0_URLS_0=http://influxdb:8086 library/kapacitor
+docker run -d -p 9092:9092 --name=kapacitor \
+        -v kapacitor:/var/lib/kapacitor --net=influxdb \
+        -e KAPACITOR_INFLUXDB_0_URLS_0=http://influxdb:8086 library/kapacitor
 
 # start a chronograf container with 8888 mapped (chronograf's port)
 # and force an influxdb url on the influxdb network
-docker run -d -p 8888:8888 --name=chronograf --net=influxdb library/chronograf --influxdb-url=http://influxdb:8086
+docker run -d -p 8888:8888 --name=chronograf \
+        --net=influxdb library/chronograf \
+        --influxdb-url=http://influxdb:8086
 ```
 
 #### Setting Up Grafana \(Optional\)
@@ -84,7 +100,8 @@ docker run -d -p 8888:8888 --name=chronograf --net=influxdb library/chronograf -
 Grafana is an alternative to Chronograf. If you want features like pie charts, you want to use Grafana.
 
 ```
-docker run -d -p 3000:3000 --name=grafana --net=influxdb grafana/grafana
+docker run -d -p 3000:3000 --name=grafana \
+        --net=influxdb grafana/grafana
 ```
 
 ### Exposing Your Dashboard To Your Network \(optional\)
@@ -92,13 +109,13 @@ docker run -d -p 3000:3000 --name=grafana --net=influxdb grafana/grafana
 After finishing the above, you may install `nginx` to expose your docker containers to the rest of the world.
 
 1. Download nginx for Windows [http://nginx.org/en/download.html](http://nginx.org/en/download.html)
-2. Extract nginx to a directory on your machine \(I like to put these sorts of things in C:\Utils\\)
+2. Extract nginx to a directory on your machine \(I like to put these sorts of things in C:/Utils/)
 3. Open the conf directory in your nginx installation and edit nginx.conf
 1. This is where all of your nginx server settings are
 2. Go into the server section of the configuration file
 3. Change `listen 80;` to `listen *:80` \(should do the same thing, but I'm paranoid on Windows\)
 4. In `location / {}` delete everything already present \(should be root html index stuff\)
-5. In location put `proxy_pass http://<your docker's ip>:<either 8888 for Chronograf or 3000 for Grafana>`
+5. In location put `proxy_pass http://{your docker's ip}:{either 8888 for Chronograf or 3000 for Grafana}`
 
 Your result should look something like this:
 
@@ -145,4 +162,63 @@ analytics
 
 ## Setting up BrowsableStoreAnalytics
 
+Once your virtual machines and databases are ready.
 
+# Running An Existing Installation
+
+The BrowsableStoreAnalytics requires all of the functionality above to be actively running.
+This includes:
+
+1. The InfluxDB database container on the Win64 machine
+1. The Grafana server container on the Win64 machine
+1. The nginx server on the Win64 machine
+1. The BrowsableStoreAnalytics Unreal Engine application on the Win64 machine
+1. A browser open to the Win64 machine's IP address on another device on the same network
+
+## Booting the InfluxDB Database
+
+If the InfluxDB database isn't already running, run the `Kitematic` program from the start menu.
+After Kitematic boots, you will be presented with a screen that has a panel docked on the left side.
+On this panel are a few options.
+To make sure InfluxDB is running, select the `influxdb` item from the left panel and then select `Start`.
+
+You should get a screen that looks similar to the following:
+
+\includegraphics[width=.8\textwidth]{gfx/kitematic.png}
+
+## Booting the Grafana Server
+
+A similar procedure to the InfluxDB Database startup should be followed.
+On the left hand side of the same screen should be an item named `grafana`.
+Select this item and select run.
+
+## Booting the nginx Server
+
+A copy of nginx can be found in the `BrowsableStoreAnalytics/nginx/` directory.
+
+## Booting the BrowsableStoreAnalytics Application
+
+### Using the Executable
+
+A copy of BrowsableStoreAnalytics.exe can be found in `BrowsableStoreAnalytics/Build/Win64/`.
+Double click this application.
+If SteamVR is active, the application will request VR focus autommatically.
+
+### Using the Unreal Editor
+
+A `uproject` file should be at the root of `BrowsableStoreAnalytics`.
+Double click this file and you will be presented with a screen like the below:
+
+\includegraphics[width=\textwidth]{gfx/browsablestoreanalyticseditoropened.png}
+
+Next to `Play` on the menu above the map editor there is a dropdown arrow.
+Select this dropdown arrow and select `VR Preview`.
+
+## Opening A Browser to the IP Address
+
+Find the Win64 machine's ip address by running `ipconfig` in a command line console.
+This should return a value that includes `192.168.XXX.XXX`.
+This is the local IP address.
+Another device on the network may enter this IP address into its search bar to open the dashboard.
+This includes anybody's phone, so you may invite people to opepn the dashboard on their phones if you like.
+ 
